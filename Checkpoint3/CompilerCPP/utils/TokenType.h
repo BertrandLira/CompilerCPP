@@ -1,0 +1,15 @@
+#ifndef TOKENTYPE_H
+#define TOKENTYPE_H
+
+enum class TokenType{
+    IDENTIFICADOR,
+    NUMERO, 
+    OPERADOR_MATEMATICO,
+    OPERADOR_RELACIONAL,
+    OPERADOR_ATRIBUICAO,
+    PARENTESES,
+    RESERVADA,
+    DOIS_PONTOS
+};
+
+#endif
