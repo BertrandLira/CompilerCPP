@@ -1,0 +1,13 @@
+program Test2;
+var
+   X: integer;
+   
+begin
+   A := 5;
+   if (A > B) and (X <= B) then
+   begin
+      X := A
+   end        
+end.	       
+
+#gere erros sintáticos
