@@ -4,251 +4,288 @@ Parser::Parser(Scanner scan){
     this->sc = scan;
 }
 
+void Parser::nextTokenPrint(){
+    tk = sc.nextToken();
+    cout << "Chamou next token: " << tk->getText() << endl;    
+}
+
+void Parser::errorMessage(int linha, string c){
+    cout << linha << " Esperava " << c << ", encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
+    throw runtime_error("ERRO SINTATICO");
+}
+
+void Parser::errorMessageType(int linha, string t){
+    cout << linha << " Esperava " << t << ", encontrou: " << tokenTypeToString(tk->getType()) << "(" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
+    throw runtime_error("ERRO SINTATICO");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void Parser::programa(){
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-
-    if(tk->getText() == "program"){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getType() == TokenType::IDENTIFICADOR){
-            tk = sc.nextToken();
-            cout << "chamou next token: " << tk->getText() << endl; //
-            if(tk->getText() == ";"){
-                declaracao_variaveis(); //RETORNA NEXT TOKEN
-                lista_subprogramas(); //RETORNA NEXT TOKEN
-                comando_composto(); //NAO RETORNA
-                tk = sc.nextToken();
-                cout << "chamou next token: " << tk->getText() << endl; //
-                if(tk->getText() != "."){
-                    cout << "20 Esperava '.', encontrou:" << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-                    throw runtime_error("ERRO SINTATICO");
-                }
-            }else{
-                cout << "24 Esperava ';', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-                throw runtime_error("ERRO SINTATICO");
-            }
-        }else{
-            cout << "28 Esperava um identificador, encontrou: " << tokenTypeToString(tk->getType()) << "(" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-            throw runtime_error("ERRO SINTATICO");
-        }
-    }else{
-        cout << "32 Esperava 'program', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-        throw runtime_error("ERRO SINTATICO");
-    }
-}
-
-void Parser::declaracao_variaveis(){ //PODE RETORNAR NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-
-    if(tk->getText() == "var"){
-        lista_declaracao_variaveis(); //RETORNA
-    } else {
-        return;
-    }
-}
-
-void Parser::lista_declaracao_variaveis(){ //PODE RETORNAR NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-    lista_identificadores(); //RETORNA
-
-    //tk = sc.nextToken();
-    //cout << "chamou next token: " << tk->getText() << endl; //
-    if(tk->getText() == ":"){
-        tipo();
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getText() == ";"){
-            lista_declaracao_variaveis2(); //RETORNA
-        }else{
-            cout << "58 Esperava ';', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-        throw runtime_error("ERRO SINTATICO");
-        }
-    }else{
-        cout << "62 Esperava ':', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-        throw runtime_error("ERRO SINTATICO");
-    }
-
-}
-
-void Parser::lista_declaracao_variaveis2(){ //PODE RETORNAR NEXT TOKEN
-
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-    if(tk->getType() == TokenType::IDENTIFICADOR){
-        lista_identificadores(); //RETORNA
-        //tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getText() == ":"){
-            tipo(); //NAO RETORNA
-            tk = sc.nextToken();
-            cout << "chamou next token: " << tk->getText() << endl; //
-            if(tk->getText() == ";"){
-                lista_declaracao_variaveis2(); //RETORNA
-            }else{
-                cout << "80 Esperava ';', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-                throw runtime_error("ERRO SINTATICO");
-            }
-        }else{
-            cout << "84 Esperava ':', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-            throw runtime_error("ERRO SINTATICO");
-        }
-        
-    } else {
-        return;
-    }
-
-}
-
-void Parser::lista_identificadores(){ //PODE RETORNAR NEXT TOKEN
-
-    if(tk->getType() == TokenType::IDENTIFICADOR){
-        lista_identificadores2(); //PODE RETORNAR
+    nextTokenPrint();
     
-    }else{
-        cout << "100 Esperava um identificador, encontrou: " << tokenTypeToString(tk->getType()) << "(" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-            throw runtime_error("ERRO SINTATICO");
-    }
-}
-
-void Parser::lista_identificadores2(){ //PODE RETORNAR O NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
+    if(tk->getText() == "program"){
+        nextTokenPrint();
         
-    if(tk->getText() == ","){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
         if(tk->getType() == TokenType::IDENTIFICADOR){
-            lista_identificadores2(); //PODE RETORNAR
-        }else{
-            cout << "113 Esperava um identificador, encontrou: " << tokenTypeToString(tk->getType()) << "(" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-            throw runtime_error("ERRO SINTATICO");
-        }
-    }else{
-        return;
-    }
-
-}
-
-void Parser::tipo(){ //NAO RETORNA NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-
-    if(tk->getText() != "integer" && tk->getText() != "real" && tk->getText() != "boolean"){
-        cout << "126 Esperava 'integer', 'real' ou 'boolean', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-        throw runtime_error("ERRO SINTATICO");
-    }
-}
-
-void Parser::lista_subprogramas(){ //PODE RETORNAR O NEXT TOKEN
-    lista_subprogramas2(); //PODE RETORNAR
-
-}
-
-void Parser::lista_subprogramas2(){ //PODE RETORNAR O NEXT TOKEN
-    //tk = sc.nextToken();
-    //cout << "chamou next token: " << tk->getText() << endl; //
-    if(tk->getText() == "procedure"){
-        declaracao_subprograma(); //NAO RETORNA NEXT TOKEN
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getText() == ";"){
-            lista_subprogramas2();
-           
-        }
-
-    }else{
-        return;
-    }
-}
-
-void Parser::declaracao_subprograma(){ //NAO RETORNA NEXT TOKEN
-
-    if(tk->getText() == "procedure"){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getType() == TokenType::IDENTIFICADOR){
-            argumentos();  //RETORNA
+            nextTokenPrint();
+            
             if(tk->getText() == ";"){
-                declaracao_variaveis(); //RETORNA
-                lista_subprogramas(); //RETORNA
-                //tk = sc.nextToken();
-                cout << "chamou next token: " << tk->getText() << endl; //
-                comando_composto(); //NAO RETORNA NEXT TOKEN
+                nextTokenPrint();
+
+                declaracao_variaveis();
+                cout << "Declaracao de variaveis - OK. Saiu com o token: " << tk->getText() << endl;
+                
+                lista_subprogramas();
+                cout << "Lista de subprogramas - OK. Saiu com o token: " << tk->getText() << endl;
+                 
+                comando_composto();
+                cout << "Comando composto - OK. Saiu com o token: " << tk->getText() << endl; 
+
+                if(tk->getText() != "."){
+                    errorMessage(20, "'.'");
+                }
+
             }else{
-                cout << "163 Esperava ';', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-                throw runtime_error("ERRO SINTATICO");
+                errorMessage(24, "';'");
+            }
+
+        }else{
+            errorMessageType(28, "identificador");
+        }
+
+    }else{
+        errorMessage(32, "'program'");
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::declaracao_variaveis(){
+    
+    if(tk->getText() == "var"){
+        nextTokenPrint();
+        lista_declaracao_variaveis(); 
+    } else {
+        return;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_declaracao_variaveis(){ 
+     
+    lista_identificadores();
+
+    if(tk->getText() == ":"){
+        nextTokenPrint();
+        tipo();
+        
+        
+        if(tk->getText() == ";"){
+            nextTokenPrint();
+            lista_declaracao_variaveis2();
+        
+        }else{
+            errorMessage(58, "';'");
+        
+        }
+        
+    }else{
+        errorMessage(62, "':'");
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_declaracao_variaveis2(){ 
+
+    
+    if(tk->getType() == TokenType::IDENTIFICADOR){
+        lista_identificadores(); 
+
+        if(tk->getText() == ":"){
+            nextTokenPrint();
+            tipo(); 
+            
+            if(tk->getText() == ";"){
+                nextTokenPrint();
+                lista_declaracao_variaveis2(); 
+            
+            }else{
+                errorMessage(80, "';'");
+            
             }
             
         }else{
-            cout << "168 Esparava um identificador, encontrou: " << tokenTypeToString(tk->getType()) << "(" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-            throw runtime_error("ERRO SINTATICO");
+            errorMessage(84, "':'");
+        
         }
-    }else{
-        cout << "172 Esperava 'procedure', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-        throw runtime_error("ERRO SINTATICO");
-    }
-}
-
-void Parser::argumentos(){ //PODE RETORNAR O NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-
-    if(tk->getText() == "("){
-        lista_parametros(); //RETORNA
-        //tk = sc.nextToken();
-        //cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getText() != ")"){
-            cout << "184 Esperava ')', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-            throw runtime_error("ERRO SINTATICO");
-        }
-    }else{
+        
+    } else {
         return;
     }
+
 }
 
-void Parser::lista_parametros(){ //PODE RETORNAR O NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_identificadores(){ 
 
     if(tk->getType() == TokenType::IDENTIFICADOR){
+        nextTokenPrint();
+        lista_identificadores2(); 
+    
+    }else{
+         errorMessageType(100, "identificador");
 
-        lista_identificadores();
-        //tk = sc.nextToken();
-        //cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getText() == ":"){
-            tipo();
-            lista_parametros2(); //RETORNA
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_identificadores2(){ 
+     
+    if(tk->getText() == ","){
+        nextTokenPrint();
+        
+        if(tk->getType() == TokenType::IDENTIFICADOR){
+            nextTokenPrint();
+            lista_identificadores2(); 
+            
         }else{
-            cout << "203 Esperava ':', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-            throw runtime_error("ERRO SINTATICO");
+            errorMessageType(113, "identificador");
+
+        }
+
+    }else{
+        return;
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::tipo(){ 
+    
+    if(tk->getText() != "integer" && tk->getText() != "real" && tk->getText() != "boolean"){
+        errorMessage(126, "'integer', 'real' ou 'boolean'");
+    }
+
+    nextTokenPrint();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_subprogramas(){ 
+
+    if(tk->getText() == "procedure"){
+        declaracao_subprograma(); 
+        
+        if(tk->getText() == ";"){
+            nextTokenPrint();
+            lista_subprogramas();
+        }
+
+    }else{
+        return;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::declaracao_subprograma(){ 
+
+    if(tk->getText() == "procedure"){
+        nextTokenPrint();
+        if(tk->getType() == TokenType::IDENTIFICADOR){
+            nextTokenPrint();
+            argumentos();
+             
+            if(tk->getText() == ";"){
+                nextTokenPrint();
+                declaracao_variaveis();
+                lista_subprogramas();
+                comando_composto();
+                
+                
+            }else{
+                errorMessage(163, ";");
+                
+            }
+            
+        }else{
+            errorMessageType(168, "identificador");
+            
         }
     }else{
-        cout << "207 Esparava um identificador, encontrou: " << tokenTypeToString(tk->getType()) << "(" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl; 
-        throw runtime_error("ERRO SINTATICO");
+        errorMessage(172, "'procedure'");
+        
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::argumentos(){
+
+    if(tk->getText() == "("){
+        nextTokenPrint();
+        lista_parametros();
+
+        if(tk->getText() != ")"){
+            errorMessage(184, "')'");
+            
+        }
+        
+        nextTokenPrint();
+        
+    }else{
+        return;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_parametros(){
+
+    if(tk->getType() == TokenType::IDENTIFICADOR){
+        lista_identificadores();
+
+        if(tk->getText() == ":"){
+            nextTokenPrint();
+            tipo();
+            lista_parametros2();
+
+        }else{
+            errorMessage(203, "':'");
+
+        }
+        
+    }else{
+        errorMessage(207, "identificador");
+
     }
 
     
 }
 
-void Parser::lista_parametros2(){ //PODE RETORNAR O NEXT TOKEN
+///////////////////////////////////////////////////////////////////////////////
 
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
+void Parser::lista_parametros2(){
 
     if(tk->getText() == ";"){
-        lista_identificadores(); //RETORNA
-        //tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //   
+        nextTokenPrint();
+        lista_identificadores();
+
         if(tk->getText() == ":"){
-            tipo(); //NAO RETORNA
-            lista_parametros2(); //RETORNA
+            nextTokenPrint();
+            tipo(); 
+            lista_parametros2(); 
 
         }else{
-            cout << "226 Esperava ':', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-            throw runtime_error("ERRO SINTATICO");
+            errorMessage(226, "':'");
+
         }
     
     }else{
@@ -256,300 +293,345 @@ void Parser::lista_parametros2(){ //PODE RETORNAR O NEXT TOKEN
     }
 }
 
-void Parser::comando_composto(){ //NAO RETORNA O NEXT TOKEN
-    //tk = sc.nextToken();
-    //cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::comando_composto(){ 
+
     if(tk->getText() == "begin"){
-        comando_opicional(); //RETORNA
-        //tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
+        nextTokenPrint();
+        comando_opicional(); 
+
         if(tk->getText() != "end"){
-            cout << "241 Esperava 'end', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-            throw runtime_error("ERRO SINTATICO");
+            errorMessage(241, "'end'");
+            
         }
+        
+        nextTokenPrint();
+        
+        
     }else{
-        cout << "245 Esperava 'begin', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-        throw runtime_error("ERRO SINTATICO");
+        errorMessage(245, "'begin'");
 
     }
+
 }
 
-void Parser::comando_opicional(){ //RETORNA NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::comando_opicional(){
     string wrd = tk->getText();
     TokenType tkType = tk->getType();
 
     if(wrd == "if" || wrd == "while" || wrd == "begin" || tkType == TokenType::IDENTIFICADOR){
-        lista_comandos(); //RETORNA
-    }else{
-        return;
+        lista_comandos(); 
+    
     }
-
 }
 
-void Parser::lista_comandos(){ //RETORNA
-    comando(); //RETORNA
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_comandos(){
+    comando();
     lista_comandos2();
 }
 
-void Parser::lista_comandos2(){ //RETORNA
-    //tk = sc.nextToken();
-    //cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::lista_comandos2(){ 
 
     if(tk->getText() == ";"){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-
-        comando(); //RETORNA
+        nextTokenPrint();
+        comando(); 
         lista_comandos2();
     
     }else {
         return;
     }
+    
 }
  
-void Parser::comando(){ //RETORNA NEXT TOKEN
-        //tk = sc.nextToken();
-        //cout << "chamou next token: " << tk->getText() << endl; // VER SE DA ERRO
+///////////////////////////////////////////////////////////////////////////////
+ 
+void Parser::comando(){ 
+    
+    //IF
+    if(tk->getText() == "if"){
+        nextTokenPrint();
+        expressao();
 
-        if(tk->getText() == "if"){
-            expressao(); //RETORNA
-            //tk = sc.nextToken();
-            //cout << "chamou next token: " << tk->getText() << endl; //
-            if(tk->getText() == "then"){
-                tk = sc.nextToken();
-                cout << "chamou next token: " << tk->getText() << endl;
-                comando(); //RETORNA
-                parte_else(); //RETORNA
-            }else{
-                cout << "326 Esperava 'then', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-                throw runtime_error("ERRO SINTATICO");
-
-            }
-
-        }else if (tk->getText() == "while"){
-            expressao(); //RETORNA
-            //tk = sc.nextToken();
-            //cout << "chamou next token: " << tk->getText() << endl; //
-            if(tk->getText() == "do"){
-                comando(); //RETORNA
-            }else{
-                cout << "302 Esperava 'do', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-                throw runtime_error("ERRO SINTATICO");
-            }
-
-        }else if(tk->getText() == "begin"){
-            comando_composto(); //NAO RETORNA
-        
-
-        }else { //VERIFICAR SE ESSE ELSE ESTA CERTO
-            variavel(); //NAO RETORNA
-            tk = sc.nextToken();
-            cout << "chamou next token: " << tk->getText() << endl; //
-            if(tk->getText() == ":="){
-                expressao(); //RETORNA
-                if(tk->getText() != ";" && tk->getText() != "end"){
-                    cout << "353 Esperava ';' ou 'end', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-                    throw runtime_error("ERRO SINTATICO");
-                }
+        if(tk->getText() == "then"){
+            nextTokenPrint();
+            comando(); 
+            parte_else(); 
             
-            }else if(tk->getType() == TokenType::IDENTIFICADOR){
-                ativacao_procedimento(); //NAO RETORNA 
-            }else{
-                cout << "360 Esperava 'Identificador', encontrou: " << tokenTypeToString(tk->getType()) << " (" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-                throw runtime_error("ERRO SINTATICO");            }
-        }
-}
-
-void Parser::ativacao_procedimento(){ //NAO RETORNA NEXT TOKEN
-
-    if(tk->getType() == TokenType::IDENTIFICADOR){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
-        if(tk->getText() == "("){
-            lista_expressoes(); //RETORNA
-
-            if(tk->getText() != ")"){
-                cout << "374 Esperava ')', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-                throw runtime_error("ERRO SINTATICO");            }
-        
         }else{
-            return;
+            errorMessage(326, "'then'");
+
         }
+
+    //WHILE
+    }else if (tk->getText() == "while" ){
+        nextTokenPrint();
+        expressao();
+
+        if(tk->getText() == "do"){
+            nextTokenPrint();
+            comando();
+
+        }else{
+            errorMessage(302, "'do'");
+            
+        }
+
+    //BEGIN
+    }else if(tk->getText() == "begin"){
+        comando_composto();
+
+    //NENHUM DOS ANTERIORES
+    }else if(tk->getType() == TokenType::IDENTIFICADOR){
+        variavel(); 
+        
+        if(tk->getText() == ":="){
+            nextTokenPrint();
+            expressao(); 
+        
+        }else 
+            ativacao_procedimento();
+        
+    } else {
+        errorMessageType(360, "comando");
+
     }
 }
 
-void Parser::variavel(){ //NAO RETORNA
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::ativacao_procedimento(){
+
+    if(tk->getText() == "("){
+        nextTokenPrint();
+        lista_expressoes();
+
+        if(tk->getText() != ")"){
+            errorMessage(374, "')'");            
+        }
+
+        nextTokenPrint();
+    
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::variavel(){
 
     if(tk->getType() != TokenType::IDENTIFICADOR){
-        cout << "386 Esperava um 'Identificador', encontrou: " << tokenTypeToString(tk->getType()) << " (" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-        throw runtime_error("ERRO SINTATICO");
+        errorMessageType(386, " identificador");
+    }
+
+    nextTokenPrint();
+    
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::parte_else(){
+
+    if(tk->getText() == "else"){
+        nextTokenPrint();
+        comando();
+        
     }
     
 }
 
-void Parser::parte_else(){ //RETORNA
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
 
-    if(tk->getText() == "else"){
-        comando(); //RETORNA
-    }else{
-        return;
-    }
+void Parser::lista_expressoes(){
+    expressao();
+    lista_expressoes2();
 }
 
-void Parser::lista_expressoes(){ //RETORNA
-    expressao(); //RETORNA
-    lista_expressoes2(); //RETORNA
-}
+///////////////////////////////////////////////////////////////////////////////
 
-void Parser::lista_expressoes2(){ //RETORNA NEXT TOKEN
-    //tk = sc.nextToken();
-    //cout << "chamou next token: " << tk->getText() << endl; //
+void Parser::lista_expressoes2(){
 
     if(tk->getText() == ","){
-        expressao(); //RETORNA
-        lista_expressoes2(); //RETORNA
+        nextTokenPrint();
+        expressao();
+        lista_expressoes2();
     }else{
         return;
     }
 }
 
-bool Parser::first_op_relacional(string op){ //NAO RETORNA
-    if(op == "=" || op == "<" || op == ">" || op == "<=" || op == ">=" || op == "<>"){
+///////////////////////////////////////////////////////////////////////////////
+
+bool Parser::first_op_relacional(string op){
+    if(op == "=" || op == "<" || op == ">" || op == "<=" || op == ">=" || op == "<>"){ //talvez colocar and
         return true;
     }
 
     return false;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 void Parser::op_relacional(){
     string op = tk->getText();
 
-    if(op == "=" || op == "<" || op == ">" || op == "<=" || op == ">=" || op == "<>"){
-        //tk = sc.nextToken();
-        //cout << "chamou next token: " << tk->getText() << endl; //
+    if(op == "=" || op == "<" || op == ">" || op == "<=" || op == ">=" || op == "<>"){ //talvez colocar and
+        nextTokenPrint();
         return;
-    }else{
-        cout << "ERRO";
     }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 void Parser::op_aditivo(){
     string op = tk->getText();
 
     if(op == "+" || op == "-" || op == "or"){
-        //tk = sc.nextToken();
-        //cout << "chamou next token: " << tk->getText() << endl; //
+        nextTokenPrint();
         return;
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 void Parser::op_multiplicativo(){
     string op = tk->getText();
 
     if(op == "*" || op == "/" || op == "and"){
-        //tk = sc.nextToken();
-        //cout << "chamou next token: " << tk->getText() << endl; //
+        nextTokenPrint();
         return;
     }
 }
 
-void Parser::expressao(){ //RETORNA NEXT TOKEN
-    expressao_simples(); //RETORNA
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::expressao(){ 
+    expressao_simples();
 
     if(first_op_relacional(tk->getText())){
-        op_relacional(); //NAO RETORNA
-        expressao_simples(); //RETORNA
+        op_relacional();
+        expressao_simples();
+        
     }else{
         return;
+        
     }
 }
 
-void Parser::expressao_simples(){ //RETORNA
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
-    sinal(); //NAO RETORNA
-    termo(); //RETORNA
-    expressao_simples2(); //RETORNA
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::expressao_simples(){
+    
+    sinal();
+    termo();
+    expressao_simples2();
 }
 
-void Parser::expressao_simples2(){ //RETORNA
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::expressao_simples2(){
+
     if(tk->getText() == "+" || tk->getText() == "-" || tk->getText() == "or"){
-        op_aditivo(); //NAO RETORNA
-        termo(); //RETORNA
-        expressao_simples2(); //RETORNA
+        op_aditivo();
+        termo();
+        expressao_simples2();
+        
     }else{
         return;
+
     }
 }
 
-void Parser::sinal(){ //NAO RETORNA NEXT TOKEN
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::sinal(){
+    
     if(tk->getText() == "+" || tk->getText() == "-"){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
+        nextTokenPrint();
         return;
-    }else{
-        //cout << "447 Esperava '+' ou '-', encontrou " << tokenTypeToString(tk->getType()) << " (" << tk->getText()  << ")" <<  " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-        //throw runtime_error("ERRO SINTATICO");
     }
 
 }
 
-void Parser::termo(){ //RETORNA
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::termo(){
     fator();
-    termo2(); //RETORNA
+    termo2();
 }
 
-void Parser::termo2(){ //RETORNA NEXT TOKEN
-    tk = sc.nextToken();
-    cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
+
+void Parser::termo2(){ 
 
     if(tk->getText() == "*" || tk->getText() == "/" || tk->getText() == "and"){
         op_multiplicativo();
-        fator(); //NAO RETORNA
-        termo2(); //RETORNA
+        fator(); 
+        termo2(); 
+        
     }else{
         return;
+    
     }
 }
 
-void Parser::fator(){ //NAO RETORNA
-    //tk = sc.nextToken();
-    //cout << "chamou next token: " << tk->getText() << endl; //
+///////////////////////////////////////////////////////////////////////////////
 
+void Parser::fator(){
+
+    //IDENTIFICADOR
     if(tk->getType() == TokenType::IDENTIFICADOR){
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
+        nextTokenPrint();
+        
         if(tk->getText() == "("){
-            lista_expressoes(); //RETORNA
+            nextTokenPrint();
+            lista_expressoes(); 
+
             if(tk->getText() != ")"){
-                cout << "528 Esperava ')', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-                throw runtime_error("ERRO SINTATICO");            
+                errorMessage(528, "')'");            
             }
+
+            nextTokenPrint();
+            
         }else{
             return;
+            
         }
+
+    //ABRE PARENTESES
     }else if(tk->getText() == "("){
-        expressao(); //RETORNA
-        tk = sc.nextToken();
-        cout << "chamou next token: " << tk->getText() << endl; //
+        nextTokenPrint();
+        expressao();
+
         if(tk->getText() != ")"){
-            cout << "539 Esperava ')', encontrou: " << tk->getText() << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-            throw runtime_error("ERRO SINTATICO");
+            errorMessage(539, "')'");
         }
+        
+        nextTokenPrint();
+        
+    //NOT
     }else if(tk->getText() == "not"){
-        fator(); //NAO RETORNA
+        nextTokenPrint();
+        fator(); 
+
+    //NUMERO
     }else if(tk->getType() == TokenType::NUMERO_INTEIRO || tk->getType() == TokenType::NUMERO_REAL){
+        nextTokenPrint();
         return;
+
+    //BOOLEANO
     }else if(tk->getText() == "true" || tk->getText() == "false"){
+        nextTokenPrint();
         return;
+
+    //NENHUM DOS ANTERIORES
     }else{
-        cout << "549 Esperava um fator (Identificador, numero, valor booleano, 'not' ou '(' ). Encontrado "; 
-        cout << tk->getText() << " do tipo " << tokenTypeToString(tk->getType()) << " (" << tk->getText()  << ")" << " na linha " << sc.getRow() << " e coluna " << sc.getCol() << endl;
-        throw runtime_error("ERRO SINTATICO");
+        errorMessageType(549, "fator (Identificador, numero, valor booleano, 'not' ou '(' )");
     }
 }
