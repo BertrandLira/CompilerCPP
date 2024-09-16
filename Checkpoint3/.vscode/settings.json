@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "iosfwd": "cpp",
+        "string": "cpp",
+        "random": "cpp",
+        "optional": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp",
+        "stdexcept": "cpp",
+        "fstream": "cpp",
+        "vector": "cpp"
+    }
+}

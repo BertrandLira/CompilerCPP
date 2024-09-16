@@ -16,6 +16,9 @@ class Parser
     public:
         Parser(Scanner scan);
 
+        void errorMessageType(int linha, string t);
+        void errorMessage(int linha, string c);
+        void nextTokenPrint();
         void programa();
         void declaracao_variaveis();
         void lista_declaracao_variaveis();

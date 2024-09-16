@@ -2,6 +2,7 @@
 #include <map>
 #include <stack>
 #include <string>
+#include "SemanticAnalyzer.h"
 
 class SemanticAnalyzer {
 private:

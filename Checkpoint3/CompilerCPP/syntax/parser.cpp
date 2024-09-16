@@ -1,8 +1,6 @@
 #include "parser.h"
-#include "SemanticAnalyzer.h"
-
-// Instância do analisador semântico
-SemanticAnalyzer semanticAnalyzer;
+#include "../semantic/semanticAnalyzer.h"
+//SemanticAnalyzer semanticAnalyzer;
 
 Parser::Parser(Scanner scan){
     this->sc = scan;
@@ -10,7 +8,7 @@ Parser::Parser(Scanner scan){
 
 void Parser::nextTokenPrint(){
     tk = sc.nextToken();
-    cout << "Chamou next token: " << tk->getText() << endl;
+    cout << "Chamou next token: " << tk->getText() << endl;    
 }
 
 void Parser::errorMessage(int linha, string c){
@@ -26,19 +24,12 @@ void Parser::errorMessageType(int linha, string t){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::programa(){
-    semanticAnalyzer.enterScope();  // Inicia escopo global
-
     nextTokenPrint();
     
     if(tk->getText() == "program"){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
-            // Declara o identificador 'program' no escopo global
-            if (!semanticAnalyzer.declareIdentifier(tk->getText(), "program")) {
-                cout << "Erro semântico: identificador 'program' já declarado." << endl;
-            }
-
             nextTokenPrint();
             
             if(tk->getText() == ";"){
@@ -68,8 +59,6 @@ void Parser::programa(){
     }else{
         errorMessage(32, "'program'");
     }
-
-    semanticAnalyzer.exitScope();  // Finaliza escopo global
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -145,43 +134,39 @@ void Parser::lista_declaracao_variaveis2(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::lista_identificadores(){ 
+
     if(tk->getType() == TokenType::IDENTIFICADOR){
-        // Declara o identificador
-        if (!semanticAnalyzer.declareIdentifier(tk->getText(), "variável")) {
-            cout << "Erro semântico: identificador '" << tk->getText() << "' já declarado no escopo atual." << endl;
-        }
-        
         nextTokenPrint();
         lista_identificadores2(); 
     
     }else{
          errorMessageType(100, "identificador");
+
     }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::lista_identificadores2(){ 
+     
     if(tk->getText() == ","){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
-            // Declara o identificador
-            if (!semanticAnalyzer.declareIdentifier(tk->getText(), "variável")) {
-                cout << "Erro semântico: identificador '" << tk->getText() << "' já declarado no escopo atual." << endl;
-            }
-            
             nextTokenPrint();
             lista_identificadores2(); 
             
         }else{
             errorMessageType(113, "identificador");
+
         }
+
     }else{
         return;
     }
+
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::tipo(){ 
@@ -213,16 +198,10 @@ void Parser::lista_subprogramas(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::declaracao_subprograma(){ 
-    semanticAnalyzer.enterScope();  // Novo escopo para o subprograma
 
     if(tk->getText() == "procedure"){
         nextTokenPrint();
         if(tk->getType() == TokenType::IDENTIFICADOR){
-            // Declara o identificador do procedimento
-            if (!semanticAnalyzer.declareIdentifier(tk->getText(), "procedure")) {
-                cout << "Erro semântico: identificador '" << tk->getText() << "' já declarado." << endl;
-            }
-            
             nextTokenPrint();
             argumentos();
              
@@ -232,18 +211,20 @@ void Parser::declaracao_subprograma(){
                 lista_subprogramas();
                 comando_composto();
                 
+                
             }else{
                 errorMessage(163, ";");
+                
             }
             
         }else{
             errorMessageType(168, "identificador");
+            
         }
     }else{
         errorMessage(172, "'procedure'");
+        
     }
-
-    semanticAnalyzer.exitScope();  // Sai do escopo do subprograma
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -317,22 +298,24 @@ void Parser::lista_parametros2(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::comando_composto(){ 
+
     if(tk->getText() == "begin"){
-        semanticAnalyzer.enterScope();  // Escopo para o bloco 'begin...end'
-        
         nextTokenPrint();
         comando_opicional(); 
 
         if(tk->getText() != "end"){
             errorMessage(241, "'end'");
+            
         }
         
         nextTokenPrint();
         
-        semanticAnalyzer.exitScope();  // Finaliza escopo do bloco
+        
     }else{
         errorMessage(245, "'begin'");
+
     }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
