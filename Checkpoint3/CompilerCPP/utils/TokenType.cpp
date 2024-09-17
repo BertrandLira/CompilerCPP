@@ -16,7 +16,11 @@ enum class TokenType {
     PONTO_VIRGULA,
     DOIS_PONTOS,
     PONTO_FINAL,
-    VIRGULA
+    VIRGULA,
+    INTEGER,
+    REAL,
+    BOOLEAN,
+    INVALID_TYPE
 };
 
 std::string tokenTypeToString(TokenType type) {
@@ -47,6 +51,12 @@ std::string tokenTypeToString(TokenType type) {
             return "Ponto final";
         case TokenType::VIRGULA:
             return "Virgula";
+        case TokenType::INTEGER:
+            return "Integer";
+        case TokenType::REAL:
+            return "Real";
+        case TokenType::BOOLEAN:
+            return "Boolean";
         default:
             return "Desconhecido";
     }

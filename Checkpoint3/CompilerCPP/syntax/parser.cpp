@@ -79,8 +79,8 @@ void Parser::lista_declaracao_variaveis(){
 
     if(tk->getText() == ":"){
         nextTokenPrint();
-        tipo();
-        
+        TokenType varTipo = tipo();
+        typeChecker.setVariableType(varTipo); 
         
         if(tk->getText() == ";"){
             nextTokenPrint();
@@ -107,7 +107,8 @@ void Parser::lista_declaracao_variaveis2(){
 
         if(tk->getText() == ":"){
             nextTokenPrint();
-            tipo(); 
+            TokenType varTipo = tipo();
+            //typeChecker.setVariableType(varTipo); 
             
             if(tk->getText() == ";"){
                 nextTokenPrint();
@@ -134,6 +135,8 @@ void Parser::lista_declaracao_variaveis2(){
 void Parser::lista_identificadores(){ 
 
     if(tk->getType() == TokenType::IDENTIFICADOR){
+
+        typeChecker.declareVariable(tk->getText());
         nextTokenPrint();
         lista_identificadores2(); 
     
@@ -151,6 +154,7 @@ void Parser::lista_identificadores2(){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
+            typeChecker.declareVariable(tk->getText());
             nextTokenPrint();
             lista_identificadores2(); 
             
@@ -167,13 +171,25 @@ void Parser::lista_identificadores2(){
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Parser::tipo(){ 
-    
-    if(tk->getText() != "integer" && tk->getText() != "real" && tk->getText() != "boolean"){
-        errorMessage(126, "'integer', 'real' ou 'boolean'");
+TokenType Parser::tipo(){ 
+    if(tk->getText() == "integer"){
+        nextTokenPrint();
+        return TokenType::INTEGER;
+    }
+    else if(tk->getText() == "real"){
+        nextTokenPrint();
+        return TokenType::REAL;
+    }
+    else if(tk->getText() == "boolean"){
+        nextTokenPrint();
+        return TokenType::BOOLEAN;
+    }
+    else{
+        errorMessageType(130, "'integer', 'real' ou 'boolean'");
+        nextTokenPrint();
     }
 
-    nextTokenPrint();
+    return TokenType::INVALID_TYPE;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
