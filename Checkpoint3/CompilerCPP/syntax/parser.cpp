@@ -1,5 +1,6 @@
 #include "parser.h"
 
+TokenType varType1, varType2;
 Parser::Parser(Scanner scan){
     this->sc = scan;
 }
@@ -405,11 +406,18 @@ void Parser::comando(){
 
     //NENHUM DOS ANTERIORES
     }else if(tk->getType() == TokenType::IDENTIFICADOR){
-        variavel(); 
-        
+        variavel();
+        string varName = tk->getText(); 
         if(tk->getText() == ":="){
             nextTokenPrint();
-            expressao(); 
+            expressao();
+
+                //Precisa alterar para ver o tipo de operação         
+                TokenType varType = typeChecker.getVariableType(varName);
+
+            if(!typeChecker.checkAssignment(varName, varType)){ 
+                cout << "Erro de tipo: atribuição inválida para a variável " << varName << endl;
+            } 
         
         }else 
             ativacao_procedimento();
@@ -527,16 +535,17 @@ void Parser::op_multiplicativo(){
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Parser::expressao(){ 
+void Parser::expressao(){
     expressao_simples();
 
     if(first_op_relacional(tk->getText())){
+        string operador = tk->getText();
         op_relacional();
         expressao_simples();
-        
-    }else{
-        return;
-        
+
+        if(!typeChecker.checkRelationalOperation(varType1, varType2)){
+            cout << "Erro de tipo: operação relacional inválida" << endl;
+        }
     }
 }
 
