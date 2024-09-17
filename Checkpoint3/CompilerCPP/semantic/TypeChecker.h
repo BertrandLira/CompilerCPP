@@ -14,6 +14,8 @@ public:
     bool checkArithmeticOperation(TokenType v1Type, TokenType v2Type, TokenType& resultType);
     bool checkRelationalOperation(TokenType v1Type, TokenType v2Type);
     bool checkLogicalOperation(TokenType valueType);
+    bool checkMultiplicativeOperation(TokenType tipo1, TokenType tipo2, Token operador);
+
 
 private:
     std::unordered_map<std::string, TokenType> variableTable;

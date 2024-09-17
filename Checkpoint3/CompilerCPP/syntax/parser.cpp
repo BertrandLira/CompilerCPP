@@ -1,6 +1,9 @@
 #include "parser.h"
+<<<<<<< Updated upstream
 #include "../semantic/semanticAnalyzer.h"
 //SemanticAnalyzer semanticAnalyzer;
+=======
+>>>>>>> Stashed changes
 
 Parser::Parser(Scanner scan){
     this->sc = scan;
@@ -30,6 +33,10 @@ void Parser::programa(){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
+<<<<<<< Updated upstream
+=======
+            
+>>>>>>> Stashed changes
             nextTokenPrint();
             
             if(tk->getText() == ";"){
@@ -136,6 +143,10 @@ void Parser::lista_declaracao_variaveis2(){
 void Parser::lista_identificadores(){ 
 
     if(tk->getType() == TokenType::IDENTIFICADOR){
+<<<<<<< Updated upstream
+=======
+       
+>>>>>>> Stashed changes
         nextTokenPrint();
         lista_identificadores2(); 
     
@@ -153,6 +164,10 @@ void Parser::lista_identificadores2(){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
+<<<<<<< Updated upstream
+=======
+           
+>>>>>>> Stashed changes
             nextTokenPrint();
             lista_identificadores2(); 
             
@@ -198,10 +213,18 @@ void Parser::lista_subprogramas(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::declaracao_subprograma(){ 
+<<<<<<< Updated upstream
 
     if(tk->getText() == "procedure"){
         nextTokenPrint();
         if(tk->getType() == TokenType::IDENTIFICADOR){
+=======
+  
+    if(tk->getText() == "procedure"){
+        nextTokenPrint();
+        if(tk->getType() == TokenType::IDENTIFICADOR){
+                       
+>>>>>>> Stashed changes
             nextTokenPrint();
             argumentos();
              
@@ -300,6 +323,10 @@ void Parser::lista_parametros2(){
 void Parser::comando_composto(){ 
 
     if(tk->getText() == "begin"){
+<<<<<<< Updated upstream
+=======
+   
+>>>>>>> Stashed changes
         nextTokenPrint();
         comando_opicional(); 
 
@@ -310,7 +337,10 @@ void Parser::comando_composto(){
         
         nextTokenPrint();
         
+<<<<<<< Updated upstream
         
+=======
+>>>>>>> Stashed changes
     }else{
         errorMessage(245, "'begin'");
 
