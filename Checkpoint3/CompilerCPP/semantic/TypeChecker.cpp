@@ -17,11 +17,10 @@ TokenType TypeChecker::getVariableType(const std::string& name) {
 bool TypeChecker::checkAssignment(const std::string& varName, TokenType valueType) {
     TokenType varType = getVariableType(varName);
 
-    if ((varType == TokenType::RESERVADA && valueType != TokenType::NUMERO_INTEIRO) || 
-        (varType == TokenType::IDENTIFICADOR && valueType == TokenType::NUMERO_INTEIRO)) {
+    if (varType != valueType) {
         return false;
     }
-    return true; 
+    return true;
 }
 
 bool TypeChecker::checkArithmeticOperation(TokenType v1Type, TokenType v2Type, TokenType& resultType) {
