@@ -5,13 +5,12 @@ TypeChecker::TypeChecker() {}
 
 void TypeChecker::declareVariable(const std::string& name) {
     variableTable[name] = TokenType::INVALID_TYPE;
-    printf("---     Variavel %s declarada com sucesso\n", name.c_str());
+    printf("Variavel %s declarada com sucesso\n", name.c_str());
 }
 void TypeChecker::setVariableType(TokenType type) {
     for (auto& pair : variableTable) {
         if (pair.second == TokenType::INVALID_TYPE){
             pair.second = type;
-            printf("---  Variavel %s atualizada para o tipo %s \n", pair.first.c_str(), tokenTypeToString(type).c_str());
         }
     }
 }

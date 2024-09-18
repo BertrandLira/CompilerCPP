@@ -109,7 +109,7 @@ void Parser::lista_declaracao_variaveis2(){
         if(tk->getText() == ":"){
             nextTokenPrint();
             TokenType varTipo = tipo();
-            //typeChecker.setVariableType(varTipo); 
+            typeChecker.setVariableType(varTipo); 
             
             if(tk->getText() == ";"){
                 nextTokenPrint();
@@ -544,10 +544,10 @@ void Parser::expressao(){
         expressao_simples();
 
         if(!typeChecker.checkRelationalOperation(varType1, varType2)){
-            cout << "Erro de tipo: operação relacional inválida" << endl;
+            cout << "Erro de tipo: operacao relacional invalida" << endl;
         }
     }
-}
+} 
 
 ///////////////////////////////////////////////////////////////////////////////
 
