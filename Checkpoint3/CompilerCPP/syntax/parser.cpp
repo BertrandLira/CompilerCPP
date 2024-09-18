@@ -1,9 +1,14 @@
 #include "parser.h"
+#include "../semantic/SemanticAnalyzer.h"
+#include "../semantic/TypeChecker.h"
 
-TokenType varType1, varType2;
+// Instância do analisador semântico
+SemanticAnalyzer semanticAnalyzer;
+
 Parser::Parser(Scanner scan){
     this->sc = scan;
 }
+TokenType varType1, varType2;
 
 void Parser::nextTokenPrint(){
     tk = sc.nextToken();
@@ -23,12 +28,20 @@ void Parser::errorMessageType(int linha, string t){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::programa(){
+    semanticAnalyzer.enterScope();  // Inicia escopo global
+
     nextTokenPrint();
     
     if(tk->getText() == "program"){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
+            // Declara o identificador 'program' no escopo global
+            if (!semanticAnalyzer.declareIdentifier(tk->getText(), "program")) {
+                cout << "Erro: Identificador 'program' já declarado." << endl;
+                throw runtime_error("ERRO SEMANTICO");
+            }
+
             nextTokenPrint();
             
             if(tk->getText() == ";"){
@@ -58,6 +71,8 @@ void Parser::programa(){
     }else{
         errorMessage(32, "'program'");
     }
+
+    semanticAnalyzer.exitScope();  // Finaliza escopo global
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -136,7 +151,7 @@ void Parser::lista_declaracao_variaveis2(){
 void Parser::lista_identificadores(){ 
 
     if(tk->getType() == TokenType::IDENTIFICADOR){
-
+        semanticAnalyzer.declareIdentifier(tk->getText(), "variavel");
         typeChecker.declareVariable(tk->getText());
         nextTokenPrint();
         lista_identificadores2(); 
@@ -155,6 +170,7 @@ void Parser::lista_identificadores2(){
         nextTokenPrint();
         
         if(tk->getType() == TokenType::IDENTIFICADOR){
+            semanticAnalyzer.declareIdentifier(tk->getText(), "variavel");
             typeChecker.declareVariable(tk->getText());
             nextTokenPrint();
             lista_identificadores2(); 
@@ -213,10 +229,14 @@ void Parser::lista_subprogramas(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::declaracao_subprograma(){ 
+    semanticAnalyzer.enterScope();
 
     if(tk->getText() == "procedure"){
         nextTokenPrint();
         if(tk->getType() == TokenType::IDENTIFICADOR){
+
+            semanticAnalyzer.declareIdentifier(tk->getText(), "procedure");
+
             nextTokenPrint();
             argumentos();
              
@@ -240,6 +260,7 @@ void Parser::declaracao_subprograma(){
         errorMessage(172, "'procedure'");
         
     }
+    semanticAnalyzer.exitScope(); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -315,6 +336,8 @@ void Parser::lista_parametros2(){
 void Parser::comando_composto(){ 
 
     if(tk->getText() == "begin"){
+        semanticAnalyzer.enterScope();
+
         nextTokenPrint();
         comando_opicional(); 
 
@@ -325,7 +348,7 @@ void Parser::comando_composto(){
         
         nextTokenPrint();
         
-        
+        semanticAnalyzer.exitScope();
     }else{
         errorMessage(245, "'begin'");
 
@@ -433,6 +456,12 @@ void Parser::comando(){
 void Parser::ativacao_procedimento(){
 
     if(tk->getText() == "("){
+
+        if (!semanticAnalyzer.isDeclared(tk->getText())) {
+            cout << "Erro: Procedimento '" << tk->getText() << "' nao declarado." << endl;
+            throw runtime_error("ERRO SEMANTICO");
+        }
+
         nextTokenPrint();
         lista_expressoes();
 
@@ -449,13 +478,16 @@ void Parser::ativacao_procedimento(){
 ///////////////////////////////////////////////////////////////////////////////
 
 void Parser::variavel(){
-
-    if(tk->getType() != TokenType::IDENTIFICADOR){
-        errorMessageType(386, " identificador");
+    if (tk->getType() == TokenType::IDENTIFICADOR) {
+        // Verificar se o identificador foi declarado
+        if (!semanticAnalyzer.isDeclared(tk->getText())) {
+            cout << "Erro: identificador '" << tk->getText() << "' nao declarado antes do uso." << endl;
+            throw runtime_error("ERRO SEMANTICO");
+        }
+    } else {
+        errorMessageType(386, "identificador");
     }
-
     nextTokenPrint();
-    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -553,6 +585,12 @@ void Parser::expressao(){
 
 void Parser::expressao_simples(){
     
+    if (tk->getType() == TokenType::IDENTIFICADOR) {
+        if (!semanticAnalyzer.isDeclared(tk->getText())) {
+            cout << "Erro: Identificador '" << tk->getText() << "' nao declarado." << endl;
+            throw runtime_error("ERRO SEMANTICO");
+        }
+    }
     sinal();
     termo();
     expressao_simples2();

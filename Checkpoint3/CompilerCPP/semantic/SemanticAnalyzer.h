@@ -5,6 +5,8 @@
 #include <stack>
 #include <string>
 
+using namespace std;
+
 class SemanticAnalyzer {
 private:
     // Pilha de tabelas de símbolos, onde cada mapa representa um escopo
@@ -21,7 +23,6 @@ public:
     // Declaração e uso de identificadores
     bool declareIdentifier(const std::string& identifier, const std::string& type);
     bool isDeclared(const std::string& identifier);
-    void useIdentifier(const std::string& identifier);
 };
 
 #endif
