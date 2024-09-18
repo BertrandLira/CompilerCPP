@@ -4,6 +4,7 @@
 #include <string>
 #include "../lexical/scanner.cpp"
 #include "../semantic/TypeChecker.cpp"
+#include "../semantic/SemanticAnalyzer.cpp"
 
 using namespace std;
 
@@ -13,8 +14,8 @@ class Parser
         Scanner sc;
         optional<Token> tk;
         TypeChecker typeChecker;
+        SemanticAnalyzer semanticAnalyzer;
 
-    
     public:
         Parser(Scanner scan);
 

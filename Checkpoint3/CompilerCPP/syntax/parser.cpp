@@ -2,9 +2,6 @@
 #include "../semantic/SemanticAnalyzer.h"
 #include "../semantic/TypeChecker.h"
 
-// Instância do analisador semântico
-SemanticAnalyzer semanticAnalyzer;
-
 Parser::Parser(Scanner scan){
     this->sc = scan;
 }
