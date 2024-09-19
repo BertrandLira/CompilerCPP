@@ -5,8 +5,6 @@
 
 enum class TokenType {
     IDENTIFICADOR,
-    NUMERO_INTEIRO,
-    NUMERO_REAL,
     OPERADOR_MATEMATICO,
     OPERADOR_RELACIONAL,
     OPERADOR_ATRIBUICAO,
@@ -27,10 +25,6 @@ std::string tokenTypeToString(TokenType type) {
     switch (type) {
         case TokenType::IDENTIFICADOR:
             return "Identificador";
-        case TokenType::NUMERO_INTEIRO:
-            return "Numero inteiro";
-        case TokenType::NUMERO_REAL:
-            return "Numero real";
         case TokenType::OPERADOR_MATEMATICO:
             return "Operador Matematico";
         case TokenType::OPERADOR_RELACIONAL:

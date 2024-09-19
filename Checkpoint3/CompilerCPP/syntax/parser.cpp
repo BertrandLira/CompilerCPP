@@ -426,16 +426,16 @@ void Parser::comando(){
 
     //NENHUM DOS ANTERIORES
     }else if(tk->getType() == TokenType::IDENTIFICADOR){
-        variavel();
         string varName = tk->getText(); 
+        variavel();
+
         if(tk->getText() == ":="){
-            nextTokenPrint();
+
+            nextTokenPrint();            
+            varType1 = tk->getType();
             expressao();
 
-                //Precisa alterar para ver o tipo de operação         
-                TokenType varType = typeChecker.getVariableType(varName);
-
-            if(!typeChecker.checkAssignment(varName, varType)){ 
+            if(!typeChecker.checkAssignment(varName, varType1)){ 
                 cout << "Erro de tipo: atribuição inválida para a variável " << varName << endl;
             } 
         
@@ -536,6 +536,7 @@ void Parser::op_relacional(){
 
     if(op == "=" || op == "<" || op == ">" || op == "<=" || op == ">=" || op == "<>"){ //talvez colocar and
         nextTokenPrint();
+        varType2 = tk->getType();
         return;
     }
 }
@@ -547,6 +548,7 @@ void Parser::op_aditivo(){
 
     if(op == "+" || op == "-" || op == "or"){
         nextTokenPrint();
+        varType2 = tk->getType();
         return;
     }
 }
@@ -557,7 +559,9 @@ void Parser::op_multiplicativo(){
     string op = tk->getText();
 
     if(op == "*" || op == "/" || op == "and"){
+
         nextTokenPrint();
+        varType2 = tk->getType();
         return;
     }
 }
@@ -568,7 +572,6 @@ void Parser::expressao(){
     expressao_simples();
 
     if(first_op_relacional(tk->getText())){
-        string operador = tk->getText();
         op_relacional();
         expressao_simples();
 
@@ -588,9 +591,14 @@ void Parser::expressao_simples(){
             throw runtime_error("ERRO SEMANTICO");
         }
     }
+
     sinal();
     termo();
     expressao_simples2();
+    
+    if(!typeChecker.checkRelationalOperation(varType1, varType2)){
+            cout << "Erro de tipo: tipos invalidos para operacao" << endl;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -601,6 +609,10 @@ void Parser::expressao_simples2(){
         op_aditivo();
         termo();
         expressao_simples2();
+
+        if(!typeChecker.checkRelationalOperation(varType1, varType2)){
+            cout << "Erro de tipo: tipos invalidos para operacao" << endl;
+        }
         
     }else{
         return;
@@ -614,6 +626,7 @@ void Parser::sinal(){
     
     if(tk->getText() == "+" || tk->getText() == "-"){
         nextTokenPrint();
+        varType1 = tk->getType();
         return;
     }
 
@@ -632,6 +645,7 @@ void Parser::termo2(){
 
     if(tk->getText() == "*" || tk->getText() == "/" || tk->getText() == "and"){
         op_multiplicativo();
+        //varType2 = tk->getType();
         fator(); 
         termo2(); 
         
@@ -681,7 +695,7 @@ void Parser::fator(){
         fator(); 
 
     //NUMERO
-    }else if(tk->getType() == TokenType::NUMERO_INTEIRO || tk->getType() == TokenType::NUMERO_REAL){
+    }else if(tk->getType() == TokenType::INTEGER || tk->getType() == TokenType::REAL){
         nextTokenPrint();
         return;
 

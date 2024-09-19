@@ -256,7 +256,7 @@ optional<Token> Scanner::nextToken() {
             
             case 10: //estado final de numeros
                 back();
-                return Token(TokenType::NUMERO_INTEIRO, content);
+                return Token(TokenType::INTEGER, content);
             
             case 11: //e
                 back();
@@ -278,7 +278,7 @@ optional<Token> Scanner::nextToken() {
             
             case 14:
                 back();
-                return Token(TokenType::NUMERO_REAL, content);
+                return Token(TokenType::REAL, content);
             
             case 15: //estado final de operadores relacionais
                 if(currentChar == '='){
