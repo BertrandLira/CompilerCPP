@@ -39,7 +39,6 @@ void Parser::programa(){
             // Declara o identificador 'program' no escopo global
             if (!semanticAnalyzer.declareIdentifier(tk->getText(), "program")) {
                 cout << "Erro: Identificador 'program' já declarado." << endl;
-                throw runtime_error("ERRO SEMANTICO");
             }
 
             nextTokenPrint();
@@ -213,30 +212,33 @@ void Parser::lista_subprogramas(){
 void Parser::declaracao_subprograma(){ 
     semanticAnalyzer.enterScope();  // Novo escopo para o subprograma
 
-    if(tk->getText() == "procedure"){
-        nextTokenPrint();
-        if(tk->getType() == TokenType::IDENTIFICADOR){
-            // Declara o identificador do procedimento
+     if(tk->getText() == "procedure"){
+        nextTokenPrint();  // Move para o próximo token, que deve ser o identificador do procedimento
 
-            semanticAnalyzer.declareIdentifier(tk->getText(), "procedure");
+        if(tk->getType() == TokenType::IDENTIFICADOR){
+            // Agora declare o identificador como um procedimento
+            if (!semanticAnalyzer.declareIdentifier(tk->getText(), "procedure")) {
+                cout << "Erro: Procedimento '" << tk->getText() << "' já declarado." << endl;
+                throw runtime_error("ERRO SEMANTICO");
+            }
+
+            // Mensagem de print indicando que o procedimento foi declarado com sucesso
+            cout << "Procedimento '" << tk->getText() << "' declarado com sucesso." << endl;
             
             nextTokenPrint();
             argumentos();
-             
             if(tk->getText() == ";"){
                 nextTokenPrint();
                 declaracao_variaveis();
                 lista_subprogramas();
                 comando_composto();
-                
-            }else{
+            } else {
                 errorMessage(163, ";");
             }
-            
-        }else{
+        } else {
             errorMessageType(168, "identificador");
         }
-    }else{
+    } else {
         errorMessage(172, "'procedure'");
     }
 
@@ -405,6 +407,9 @@ void Parser::comando(){
 
     //NENHUM DOS ANTERIORES
     }else if(tk->getType() == TokenType::IDENTIFICADOR){
+        string identifierType = semanticAnalyzer.getIdentifierType(tk->getText());
+        cout << "Tipo " << identifierType << "" << endl;
+
         variavel(); 
         
         if(tk->getText() == ":="){
@@ -425,9 +430,15 @@ void Parser::comando(){
 void Parser::ativacao_procedimento(){
     if (tk->getText() == "(") {
         // Verificar se o identificador foi declarado antes da chamada do procedimento
-        if (!semanticAnalyzer.isDeclared(tk->getText())) {
-            cout << "Erro: Procedimento '" << tk->getText() << "' nao declarado." << endl;
-            throw runtime_error("ERRO SEMANTICO");
+        
+        
+        std::string tokenText = tk->getText();
+
+        // Verifica se o token é um identificador (começa com uma letra)
+        if (isalpha(tokenText[0]) && tk->getType() != TokenType::RESERVADA) {
+            if (!semanticAnalyzer.isDeclared(tokenText)) {
+                std::cout << "Erro: Identificador '" << tokenText << "' não declarado." << std::endl;
+            }
         }
 
         nextTokenPrint();
@@ -446,7 +457,7 @@ void Parser::variavel(){
         // Verificar se o identificador foi declarado
         if (!semanticAnalyzer.isDeclared(tk->getText())) {
             cout << "Erro: identificador '" << tk->getText() << "' nao declarado antes do uso." << endl;
-            throw runtime_error("ERRO SEMANTICO");
+            //throw runtime_error("ERRO SEMANTICO");
         }
     } else {
         errorMessageType(386, "identificador");
@@ -549,12 +560,15 @@ void Parser::expressao(){
 void Parser::expressao_simples(){
     sinal();
     // Se o token for um identificador, verifique se foi declarado
-    if (tk->getType() == TokenType::IDENTIFICADOR) {
-        if (!semanticAnalyzer.isDeclared(tk->getText())) {
-            cout << "Erro: Identificador '" << tk->getText() << "' nao declarado." << endl;
-            throw runtime_error("ERRO SEMANTICO");
+    std::string tokenText = tk->getText();
+
+    // Verifica se o token é um identificador (começa com uma letra)
+    if (isalpha(tokenText[0]) && tk->getType() != TokenType::RESERVADA) {
+        if (!semanticAnalyzer.isDeclared(tokenText)) {
+            std::cout << "Erro: Identificador '" << tokenText << "' não declarado." << std::endl;
         }
     }
+    
     termo();
     expressao_simples2();
 }
