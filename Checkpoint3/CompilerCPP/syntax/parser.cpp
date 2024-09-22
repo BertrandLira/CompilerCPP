@@ -389,6 +389,7 @@ void Parser::comando(){
 
     //WHILE
     }else if (tk->getText() == "while" ){
+
         nextTokenPrint();
         expressao();
 
@@ -401,15 +402,31 @@ void Parser::comando(){
             
         }
 
+    //FOR
+    }else if(tk->getText() == "for"){
+        nextTokenPrint();
+        comando();
+
+        if(tk->getText() == "to"){
+            nextTokenPrint();
+            expressao();
+
+            if(tk->getText() == "do"){
+                nextTokenPrint();
+                comando();
+            }else{
+                errorMessage(413, "'do'");
+            }
+        }else{
+            errorMessage(416, "'to'");
+        }    
+
     //BEGIN
     }else if(tk->getText() == "begin"){
         comando_composto();
 
     //NENHUM DOS ANTERIORES
     }else if(tk->getType() == TokenType::IDENTIFICADOR){
-        string identifierType = semanticAnalyzer.getIdentifierType(tk->getText());
-        cout << "Tipo " << identifierType << "" << endl;
-
         variavel(); 
         
         if(tk->getText() == ":="){
@@ -429,9 +446,6 @@ void Parser::comando(){
 
 void Parser::ativacao_procedimento(){
     if (tk->getText() == "(") {
-        // Verificar se o identificador foi declarado antes da chamada do procedimento
-        
-        
         std::string tokenText = tk->getText();
 
         // Verifica se o token é um identificador (começa com uma letra)

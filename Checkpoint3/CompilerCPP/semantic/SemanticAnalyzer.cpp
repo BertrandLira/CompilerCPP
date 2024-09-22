@@ -19,7 +19,7 @@
     // Sair do escopo atual
     void SemanticAnalyzer::exitScope() {
         if (!symbolTableStack.empty()) {
-            std::cout << "Saindo do escopo. Removendo variáveis locais." << std::endl;
+            std::cout << "Saindo do escopo. Removendo variaveis locais." << std::endl;
             symbolTableStack.pop();
         } else {
             std::cout << "Erro: Nenhum escopo para sair." << std::endl;
@@ -48,7 +48,7 @@
                     return false;
                 }
                 currentScope[identifier] = type;
-                std::cout << "Variável '" << identifier << "' declarada como '" << type << "' no escopo atual." << std::endl;
+                std::cout << "Variavel '" << identifier << "' declarada como '" << type << "' no escopo atual." << std::endl;
                 return true;
             }
         }
@@ -92,11 +92,6 @@
         // Depois, verificar nos escopos locais
         std::stack<std::map<std::string, std::string>> tempStack = symbolTableStack;
         while (!tempStack.empty()) {
-            std::cout << "Verificando escopo. Identificadores no escopo atual:" << std::endl;
-            for (const auto& entry : tempStack.top()) {
-                std::cout << "Identificador: " << entry.first << ", Tipo: " << entry.second << std::endl;
-            }
-
             auto it = tempStack.top().find(identifier);
             if (it != tempStack.top().end()) {
                 std::cout << "Encontrado identificador '" << identifier << "' com tipo '" << it->second << "'." << std::endl;
