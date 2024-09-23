@@ -5,8 +5,6 @@
 
 enum class TokenType {
     IDENTIFICADOR,
-    NUMERO_INTEIRO,
-    NUMERO_REAL,
     OPERADOR_MATEMATICO,
     OPERADOR_RELACIONAL,
     OPERADOR_ATRIBUICAO,
@@ -16,17 +14,17 @@ enum class TokenType {
     PONTO_VIRGULA,
     DOIS_PONTOS,
     PONTO_FINAL,
-    VIRGULA
+    VIRGULA,
+    INTEGER,
+    REAL,
+    BOOLEAN,
+    INVALID_TYPE
 };
 
 std::string tokenTypeToString(TokenType type) {
     switch (type) {
         case TokenType::IDENTIFICADOR:
             return "Identificador";
-        case TokenType::NUMERO_INTEIRO:
-            return "Numero inteiro";
-        case TokenType::NUMERO_REAL:
-            return "Numero real";
         case TokenType::OPERADOR_MATEMATICO:
             return "Operador Matematico";
         case TokenType::OPERADOR_RELACIONAL:
@@ -47,6 +45,12 @@ std::string tokenTypeToString(TokenType type) {
             return "Ponto final";
         case TokenType::VIRGULA:
             return "Virgula";
+        case TokenType::INTEGER:
+            return "Integer";
+        case TokenType::REAL:
+            return "Real";
+        case TokenType::BOOLEAN:
+            return "Boolean";
         default:
             return "Desconhecido";
     }

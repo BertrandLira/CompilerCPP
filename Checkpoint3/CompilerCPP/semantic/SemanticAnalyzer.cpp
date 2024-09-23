@@ -21,6 +21,7 @@
         if (!symbolTableStack.empty()) {
             std::cout << "Saindo do escopo. Removendo variaveis locais." << std::endl;
             symbolTableStack.pop();
+            cout << "Saindo do escopo" << endl;
         } else {
             std::cout << "Erro: Nenhum escopo para sair." << std::endl;
         }

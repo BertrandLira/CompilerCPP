@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 #include "../lexical/scanner.cpp"
+#include "../semantic/TypeChecker.cpp"
+#include "../semantic/SemanticAnalyzer.cpp"
 
 using namespace std;
 
@@ -11,18 +13,22 @@ class Parser
     private:
         Scanner sc;
         optional<Token> tk;
+        TypeChecker typeChecker;
+        SemanticAnalyzer semanticAnalyzer;
 
-    
     public:
         Parser(Scanner scan);
 
+        void errorMessageType(int linha, string t);
+        void errorMessage(int linha, string c);
+        void nextTokenPrint();
         void programa();
         void declaracao_variaveis();
         void lista_declaracao_variaveis();
         void lista_declaracao_variaveis2();
         void lista_identificadores();
         void lista_identificadores2();
-        void tipo();
+        TokenType tipo();
         void declaracao_subprograma();
         void lista_subprogramas();
         void lista_subprogramas2();
