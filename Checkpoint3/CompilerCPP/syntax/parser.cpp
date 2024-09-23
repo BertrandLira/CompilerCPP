@@ -433,13 +433,17 @@ void Parser::comando(){
 
             nextTokenPrint();            
             varType1 = tk->getType();
+            if(varType1 == TokenType::IDENTIFICADOR){
+                string varName1 = tk->getText();
+                varType1 = typeChecker.getVariableType(varName1);
+            }
             expressao();
 
             if(!typeChecker.checkAssignment(varName, varType1)){ 
-                cout << "Erro de tipo: atribuição inválida para a variável " << varName << endl;
+                cout << "Erro de tipo: atribuicao invalida para a varivel " << varName << endl;
             } 
         
-        }else 
+        }else
             ativacao_procedimento();
         
     } else {

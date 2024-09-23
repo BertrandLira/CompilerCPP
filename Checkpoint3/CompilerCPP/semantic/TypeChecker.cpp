@@ -32,7 +32,7 @@ bool TypeChecker::checkAssignment(const std::string& varName, TokenType valueTyp
         }
         return false;
     }
-    //printf("Atribuicao de %s para %s\n", tokenTypeToString(valueType).c_str(), tokenTypeToString(varType).c_str());
+    printf("Atribuicao de %s para %s\n", tokenTypeToString(valueType).c_str(), tokenTypeToString(varType).c_str());
     return true;
 }
 bool TypeChecker::checkRelationalOperation(TokenType v1Type, TokenType v2Type) {
