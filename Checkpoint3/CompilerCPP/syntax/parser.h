@@ -56,6 +56,10 @@ class Parser
         void op_aditivo();
         void op_multiplicativo();
 
+        void nextTokenPrint();
+        void errorMessage(int linha, string c);
+        void errorMessageType(int linha, string t);
+
         bool first_op_relacional(string op);
 
 };

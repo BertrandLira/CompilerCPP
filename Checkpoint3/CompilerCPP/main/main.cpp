@@ -2,6 +2,7 @@
 #include <iostream>
 #include <optional>
 #include "../syntax/parser.cpp"
+#include "../semantic/SemanticAnalyzer.cpp"
 
 using namespace std;
 

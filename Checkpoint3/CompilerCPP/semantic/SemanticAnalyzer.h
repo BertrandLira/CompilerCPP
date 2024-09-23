@@ -11,6 +11,8 @@ class SemanticAnalyzer {
 private:
     // Pilha de tabelas de símbolos, onde cada mapa representa um escopo
     std::stack<std::map<std::string, std::string>> symbolTableStack;
+     // Tabela de símbolos global (procedures, constantes, etc.)
+    std::map<std::string, std::string> globalSymbolTable;
 
 public:
     // Construtor
@@ -23,6 +25,7 @@ public:
     // Declaração e uso de identificadores
     bool declareIdentifier(const std::string& identifier, const std::string& type);
     bool isDeclared(const std::string& identifier);
+    std::string getIdentifierType(const std::string& identifier);
 };
 
 #endif
